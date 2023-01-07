@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  messages_db:
+    image: postgres
+    container_name: messages_db
+    restart: unless-stopped
+    environment:
+        POSTGRES_USER: root
+        POSTGRES_PASSWORD: '123456'
+        PGDATA: /data/postgres
+    volumes:
+        - messages_pg_data:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - messages-network
+
+  messages_redis:
+    container_name: messages_redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - messages-network
+    volumes:
+      - messages_redis_data:/data
+
+networks:
+  messages-network:
+    driver: bridge
+
+volumes:
+  messages_pg_data:
+    driver: local
+
+  messages_redis_data:
